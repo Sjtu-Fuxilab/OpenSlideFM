@@ -23,8 +23,8 @@ from datetime import datetime
 from time import perf_counter
 
 # ---------- Paths (strict) ----------
-WORKSPACE = Path(r"D:\个人文件夹\Sanwal\OpenSlide").resolve()
-WSI_ROOT  = Path(r"D:\个人文件夹\Sanwal\DL_V2\Histo slides 20k").resolve()
+WORKSPACE = Path(os.environ.get("WORKSPACE", "./workspace"))).resolve()
+WSI_ROOT  = Path(os.environ.get("WSI_ROOT", "./data/wsi"))).resolve()
 SUBDIRS = {
     "features": WORKSPACE / "features",
     "tiles":    WORKSPACE / "tiles",
