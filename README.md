@@ -52,6 +52,34 @@ brew install openslide
 # Windows: Download from https://openslide.org/download/
 ```
 
+
+
+## Configuration
+
+### Environment Variables
+
+Set these environment variables before running the pipeline:
+
+```bash
+# Required
+export WORKSPACE=/path/to/workspace          # Output directory
+export WSI_ROOT=/path/to/wsi/slides          # WSI data directory
+
+# Optional
+export DATA_ROOT=/path/to/data               # General data directory
+export PANDA_ROOT=/path/to/panda             # PANDA dataset
+export UNI_FEATURES=/path/to/uni/features    # UNI features directory
+export RESULTS_DIR=/path/to/results          # Results output
+```
+
+Or create a `.env` file:
+
+```bash
+WORKSPACE=./workspace
+WSI_ROOT=./data/wsi
+DATA_ROOT=./data
+```
+
 ## Quick Start
 
 1. **Configure paths** in the notebook or set environment variables
