@@ -31,8 +31,8 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Configuration
-PANDA_ROOT = Path(r"D:\个人文件夹\Sanwal\OpenSlide\Validation Data\PANDA")
-WORKSPACE = Path(r"D:\个人文件夹\Sanwal\OpenSlide")
+PANDA_ROOT = Path(os.environ.get("PANDA_ROOT", "./data/panda")))
+WORKSPACE = Path(os.environ.get("WORKSPACE", "./workspace")))
 
 OUTPUT_DIRS = {
     "features_05": WORKSPACE / "features" / "panda" / "scale0p5",
