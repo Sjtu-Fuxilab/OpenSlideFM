@@ -22,7 +22,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 
 # -------- Paths --------
-WORKSPACE   = Path(r"D:\个人文件夹\Sanwal\OpenSlide")
+WORKSPACE   = Path(os.environ.get("WORKSPACE", "./workspace")))
 LOGS_DIR    = WORKSPACE / "logs"
 MODELS_DIR  = WORKSPACE / "models"
 FEAT05_DIR  = WORKSPACE / "features" / "scale0p5"
