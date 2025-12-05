@@ -1,0 +1,21 @@
+# OpenSlideFM Configuration
+# =========================
+
+# Paths (MODIFY THESE)
+wsi_root: /path/to/your/wsi/data
+workspace: /path/to/output/workspace
+
+# Pipeline settings
+tile_size: 256
+magnifications: [5, 20]
+token_budget: 4096
+
+# Training
+batch_size: 32
+learning_rate: 0.0001
+epochs: 100
+seed: 42
+
+# Hardware
+device: cuda
+num_workers: 4
