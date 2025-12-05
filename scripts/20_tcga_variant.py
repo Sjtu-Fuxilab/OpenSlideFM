@@ -42,7 +42,7 @@ warnings.filterwarnings("ignore")
 # ========================= CONFIG =========================
 @dataclass
 class CFG:
-    WORKSPACE: Path = Path(r"D:\个人文件夹\Sanwal\OpenSlide")
+    WORKSPACE: Path = Path(os.environ.get("WORKSPACE", "./workspace")))
     F05: Path = WORKSPACE / "features" / "scale0p5"
     F20: Path = WORKSPACE / "features" / "scale2p0"
     OUT: Path = WORKSPACE / "results" / "ablations_complete"
