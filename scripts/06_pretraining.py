@@ -25,7 +25,7 @@ from dataclasses import dataclass
 from typing import List, Dict, Optional
 
 # --------------------------- Workspace ---------------------------
-WORKSPACE = Path(r"D:\个人文件夹\Sanwal\OpenSlide").resolve()
+WORKSPACE = Path(os.environ.get("WORKSPACE", "./workspace"))).resolve()
 FEATURES05 = WORKSPACE / "features" / "scale0p5"
 FEATURES20 = WORKSPACE / "features" / "scale2p0"
 LOGS       = WORKSPACE / "logs"
