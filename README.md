@@ -142,7 +142,7 @@ OpenSlideFM/
   author={Zafar, Sanwal Ahmad and Qin, Wei},
   journal={arXiv preprint},
   year={2025},
-  institution={Shanghai Jiao Tong University}
+  institution={Shanghai Jiao Tong University, China}
 }
 ```
 
@@ -152,8 +152,8 @@ Apache License 2.0 - see [LICENSE](LICENSE)
 
 ## Contact
 
-- **Sanwal Ahmad Zafar** - sanwal@sjtu.edu.cn
-- **Wei Qin** (Advisor) - Shanghai Jiao Tong University
+- **Sanwal Ahmad Zafar** 
+- **Wei Qin** (Correspondence) - Shanghai Jiao Tong University, China (wqin@sjtu.edu.cn).
 
 ---
 
