@@ -24,7 +24,7 @@ import subprocess, warnings
 warnings.filterwarnings("ignore")
 
 # --------------- Workspace ---------------
-WORKSPACE = Path(r"D:\个人文件夹\Sanwal\OpenSlide")
+WORKSPACE = Path(os.environ.get("WORKSPACE", "./workspace")))
 FEAT05 = WORKSPACE / "features" / "scale0p5"
 FEAT20 = WORKSPACE / "features" / "scale2p0"
 EMB_DIR = WORKSPACE / "embeddings"
