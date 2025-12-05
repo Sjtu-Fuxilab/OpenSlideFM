@@ -21,7 +21,7 @@ from pathlib import Path
 from datetime import datetime
 warnings.filterwarnings("ignore")
 
-WS = Path(r"D:\个人文件夹\Sanwal\OpenSlide")
+WS = Path(os.environ.get("WORKSPACE", "./workspace")))
 RAW = WS / r"Raw Data" / "CAMELYON17"
 EMB_INDEX = WS / "embeddings" / "camelyon17_index.csv"
 MANIFEST  = WS / "manifests" / "manifest_camelyon17.csv"
