@@ -53,8 +53,8 @@ np.random.seed(42)
 # ============================================================================
 class Config:
     # Paths
-    OPENSLIDE = Path(r"D:\个人文件夹\Sanwal\OpenSlide")
-    DL_V2 = Path(r"D:\个人文件夹\Sanwal\DL_V2")
+    OPENSLIDE = Path(os.environ.get("WORKSPACE", "./workspace")))
+    DL_V2 = Path(os.environ.get("DATA_ROOT", "./data")))
     
     # Data
     EMBEDDINGS = DL_V2 / "artifacts" / "embeddings" / "patient_means_clean_run_20250908_020405_emb_openclip_vitb16_turbo.parquet"
