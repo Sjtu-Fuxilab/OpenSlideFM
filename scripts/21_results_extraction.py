@@ -19,6 +19,7 @@ License: Apache 2.0
 Fixed Diagnostic - handles missing variants gracefully
 Run this in Jupyter and paste the output
 """
+import os
 import json
 import pandas as pd
 import numpy as np
@@ -38,7 +39,7 @@ def convert_numpy(obj):
         return [convert_numpy(item) for item in obj]
     return obj
 
-WORKSPACE = Path(r"D:\个人文件夹\Sanwal\OpenSlide")
+WORKSPACE = Path(os.environ.get("WORKSPACE", "./workspace")))
 RESULTS = WORKSPACE / "results" / "ablations_complete" / "tcga"
 
 metrics = {}
