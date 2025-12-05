@@ -16,6 +16,7 @@ License: Apache 2.0
 """
 
 # metrics_from_oof.py
+import os
 import json
 import numpy as np
 import pandas as pd
@@ -23,7 +24,7 @@ from pathlib import Path
 from sklearn.metrics import roc_auc_score, average_precision_score
 
 # === EDIT THIS TO THE RUN YOU CARE ABOUT ===
-RESULTS_DIR = Path(r"D:\个人文件夹\Sanwal\OpenSlide\results\panda_mil_088")
+RESULTS_DIR = Path(os.environ.get("RESULTS_DIR", "./results")))
 OOF_CSV = next((p for p in [
     RESULTS_DIR / "oof_predictions.csv",
     RESULTS_DIR / "oof.csv"
