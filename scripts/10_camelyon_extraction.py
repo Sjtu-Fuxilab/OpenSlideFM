@@ -23,7 +23,7 @@ from datetime import datetime
 warnings.filterwarnings("ignore")
 
 # ----------------------- Paths -----------------------
-WORKSPACE = Path(r"D:\个人文件夹\Sanwal\OpenSlide")
+WORKSPACE = Path(os.environ.get("WORKSPACE", "./workspace")))
 RAW_CAM16 = WORKSPACE / r"Raw Data" / "CAMELYON16"
 RAW_CAM17 = WORKSPACE / r"Raw Data" / "CAMELYON17"
 
