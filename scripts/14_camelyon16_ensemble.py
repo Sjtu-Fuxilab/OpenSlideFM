@@ -37,7 +37,7 @@ from sklearn.feature_selection import SelectKBest, f_classif
 warnings.filterwarnings("ignore")
 
 # ----------------- CONFIG -----------------
-WORKSPACE = Path(r"D:/个人文件夹/Sanwal/OpenSlide")
+WORKSPACE = Path(os.environ.get("WORKSPACE", "./workspace")))
 FEATURES_ROOT = WORKSPACE / "features"
 MANIFEST_OUT  = WORKSPACE / "manifests" / "manifest_cam16_AUTO.csv"
 OUTDIR        = WORKSPACE / "results" / "cam16_slide_ensemble_ENHANCED"
