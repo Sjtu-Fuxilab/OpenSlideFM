@@ -23,10 +23,10 @@ from typing import Any, Dict, Optional
 
 # ------------------------------- USER PATHS -------------------------------
 # READ-ONLY: your TCGA WSI root (no writes will ever be performed here)
-WSI_ROOT = Path(r"D:\个人文件夹\Sanwal\DL_V2\Histo slides 20k")
+WSI_ROOT = Path(os.environ.get("WSI_ROOT", "./data/wsi")))
 
 # WORKSPACE: all pipeline outputs go here (and only here)
-WORKSPACE = Path(r"D:\个人文件夹\Sanwal\OpenSlide")
+WORKSPACE = Path(os.environ.get("WORKSPACE", "./workspace")))
 
 # ----------------------------- SUBFOLDER LAYOUT ---------------------------
 SUBDIRS = {
