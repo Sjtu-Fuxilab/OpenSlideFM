@@ -22,7 +22,7 @@ from pathlib import Path
 from datetime import datetime
 
 # ---------- Config ----------
-WORKSPACE = Path(r"D:/个人文件夹/Sanwal/OpenSlide")
+WORKSPACE = Path(os.environ.get("WORKSPACE", "./workspace")))
 RAW_CAM16 = WORKSPACE / "Raw Data" / "CAMELYON16"
 MANIFEST1 = WORKSPACE / "manifests" / "manifest_camelyon16_originals.csv"
 MANIFEST2 = WORKSPACE / "manifests" / "manifest_cam16_CLEAN.csv"
