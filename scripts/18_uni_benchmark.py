@@ -54,8 +54,8 @@ warnings.filterwarnings("ignore")
 # ======================
 @dataclass
 class Config:
-    BASE_DIR: Path = Path(r"D:\个人文件夹\Sanwal\OpenSlide\UNI features")
-    OUTPUT_DIR: Path = Path(r"D:\个人文件夹\Sanwal\OpenSlide\UNI features\results")
+    BASE_DIR: Path = Path(os.environ.get("UNI_FEATURES", "./features/uni")))
+    OUTPUT_DIR: Path = Path(os.environ.get("UNI_RESULTS", "./results/uni")))
     TCGA_TYPES: Tuple[str, ...] = (
         'TCGA-ACC', 'TCGA-BRCA_IDC', 'TCGA-COAD', 'TCGA-DLBC', 'TCGA-GBM',
         'TCGA-HNSC', 'TCGA-KIRC', 'TCGA-LUAD', 'TCGA-SKCM', 'TCGA-UCEC'
