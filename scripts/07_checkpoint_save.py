@@ -23,7 +23,7 @@ from datetime import datetime
 warnings.filterwarnings("ignore")
 
 # ----------------------- Paths -----------------------
-WORKSPACE   = Path(r"D:\个人文件夹\Sanwal\OpenSlide")
+WORKSPACE   = Path(os.environ.get("WORKSPACE", "./workspace")))
 FEAT05_DIR  = WORKSPACE / "features" / "scale0p5"
 FEAT20_DIR  = WORKSPACE / "features" / "scale2p0"
 MODELS_DIR  = WORKSPACE / "models"
