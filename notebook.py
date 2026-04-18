@@ -1,15 +1,4 @@
-#!/usr/bin/env python3
-"""
-OpenSlideFM — Complete Pipeline
-A computationally efficient multi-scale foundation model for computational
-pathology. Dual-scale (0.5 + 2.0 μm/pixel) transformer architecture with
-BYOL + Masked Feature Reconstruction pre-training.
-
-Architecture:
-  - Backbone: ConvNeXt-Tiny (28M parameters, 768-d features)
-  - Aggregator: 6-layer Transformer encoder (43M parameters)
-  - Total: 71M parameters
-  - Token budget: 1,600 (1,200 high-res + 400 low-res, 3:1 ratio)
+# OpenSlideFM — Complete Pipeline
 
 Pipeline:
   Script 01: Environment setup & paths
