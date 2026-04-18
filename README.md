@@ -26,33 +26,16 @@ OpenSlideFM processes whole-slide images at two resolutions (0.5 and 2.0 μm/pix
 | Multi-center pN staging | CAMELYON17 (499 slides) | Quadratic κ | 0.141 |
 | Prostate cancer grading | PANDA (10,616 slides) | Quadratic κ | 0.826 |
 
-## Getting Started
-
-```bash
-git clone https://github.com/Sjtu-Fuxilab/OpenSlideFM.git
-cd OpenSlideFM
-
-# Set paths
-export WORKSPACE=/path/to/workspace
-export WSI_ROOT=/path/to/wsi/slides
-export PANDA_ROOT=/path/to/panda           # optional
-
-# Install
-pip install -r requirements.txt
-sudo apt-get install openslide-tools       # Ubuntu/Debian
-```
 
 ## Pipeline
 
-`pipeline.py` contains the full training and evaluation pipeline (Scripts 01–12):
+`notebook.py` contains the full training and evaluation pipeline (Scripts 01–12):
 
 ```
 WSI Input → Tissue Segmentation → Two-Scale Tiling (0.5 + 2.0 μm/pixel)
          → ConvNeXt-Tiny Feature Extraction → Transformer Aggregation
          → BYOL + MFR Pre-training → Downstream Evaluation
 ```
-
-`benchmark_evaluation.py` reproduces the 10-class benchmark comparison (Table 2) with patient-level feature aggregation and TSS-grouped cross-validation.
 
 ## Data
 
