@@ -1,51 +1,163 @@
 # OpenSlideFM
 
-A computationally efficient multi-scale foundation model for computational pathology.
+**OpenSlideFM: A Computationally Efficient Multi-Scale Foundation Model for Computational Pathology**
 
-**71M parameters · Single consumer GPU · 2.3 sec/WSI**
+Sanwal Ahmad Zafar, Wei Qin\*, Liu Chengliang, Areeba Ali Khan, Alina Nazir, Farhan Khalid, Muhammad Salman Faisal
+
+\*Corresponding author: Prof. Wei Qin (wqin@sjtu.edu.cn)
+
+---
 
 ## Overview
 
-OpenSlideFM processes whole-slide images at two resolutions (0.5 and 2.0 μm/pixel) to capture both cellular morphology and tissue architecture. Pre-trained with BYOL + Masked Feature Reconstruction on 20,000 TCGA slides spanning 31 cancer types.
+This repository contains the complete pipeline for OpenSlideFM, a computationally efficient foundation model for histopathology that runs end-to-end on a single consumer-grade GPU (RTX 4090, 24 GB).
 
-| Component | Detail |
-|-----------|--------|
-| Backbone | ConvNeXt-Tiny (28M, 768-d) |
-| Aggregator | 6-layer Transformer (43M) |
-| Token budget | 1,600 (1,200 high-res + 400 low-res) |
-| Pre-training | BYOL (EMA=0.996) + MFR (25% mask) |
-| Hardware | NVIDIA RTX 4090 (24 GB), 72 hrs |
+We show that:
 
-## Results
+- A multi-scale architecture (0.5 + 2.0 μm/pixel) captures cellular morphology and tissue architecture jointly, achieving 2.35% absolute improvement over single-scale baselines (p < 0.001)
+- A 71M-parameter design (28M ConvNeXt-Tiny backbone + ~45M transformer aggregator) deploys on consumer hardware, representing 4.3× fewer parameters than UNI and 26× fewer than Virchow2-Giant
+- BYOL self-distillation combined with a Masked Feature Reconstruction (MFR) decoder, trained on 20,000 TCGA slides for 4 epochs in ~72 hours, produces embeddings competitive with much larger models
+- External validation across CAMELYON16 (metastasis detection), CAMELYON17 (multi-center pN staging), and PANDA (Gleason grading) demonstrates robust generalization
 
-| Task | Dataset | Metric | Result |
-|------|---------|--------|--------|
-| Pan-cancer classification (31-class) | TCGA (20K slides) | Accuracy | 81.21% |
-| 10-class benchmark | TCGA (4,044 patients) | Accuracy | 91.0% ± 2.6% |
-| Lymph node metastasis detection | CAMELYON16 (269 slides) | AUROC | 0.673 |
-| Multi-center pN staging | CAMELYON17 (499 slides) | Quadratic κ | 0.141 |
-| Prostate cancer grading | PANDA (10,616 slides) | Quadratic κ | 0.826 |
+## Notebooks
 
+| Notebook | Description |
+|----------|-------------|
+| `NB01_Setup_Environment.ipynb` | Paths, environment logging, compute-passport initialization, single-WSI sanity probe |
+| `NB02_Manifest_Provenance.ipynb` | Read-only WSI scan, file fingerprints, manifest parquet/CSV, summary diagnostic figures |
+| `NB03_QC_TissueMasking.ipynb` | Per-slide tissue percentage, blur (Laplacian variance), pen-marking detection, exclusion thresholds, QC overlays |
+| `NB04_TwoScale_Tiling.ipynb` | Two-scale tile coordinate manifests at 0.5 and 2.0 μm/pixel, 30% tissue coverage filter, uniform random sampling to 1,200 + 400 token budget |
+| `NB05_Feature_Extraction.ipynb` | ConvNeXt-Tiny patch features (768-d) at both scales, throughput self-test gate, mixed-precision inference |
+| `NB06_Pretrain_BYOL_MFR.ipynb` | Two-phase pretraining: phase 1 feature-space BYOL+MFR on the aggregator (epochs 1–2), phase 2 end-to-end raw-tile fine-tuning of backbone + aggregator (epochs 3–4) with separate learning rates. EMA teacher, Masked Feature Reconstruction decoder, cosine LR schedule with warmup |
+| `NB06C_Posttrain_Diagnostics.ipynb` | Training-log analysis, checkpoint integrity, four pass/warn/fail gates including a backbone-was-actually-trained check that compares pretrained ConvNeXt weights to the ImageNet baseline |
+| `NB07_TCGA_PanCancer_Eval.ipynb` | TCGA 31-class evaluation, 5-fold stratified group CV (TSS-grouped) across 3 seeds, bootstrap 95% CI, OOF arrays for downstream figures |
+| `NB08_Embeddings_Export.ipynb` | Per-slide 768-d embedding export using the trained MILTransformer, routed by dataset (TCGA/CAMELYON16/CAMELYON17) |
+| `NB09_CAM17_pN_Staging.ipynb` | CAMELYON17 leave-one-center-out CV, ordinal/multinomial/ridge classifier ablation, quadratic-weighted κ with bootstrap CI, per-center κ table, stage-transition matrix |
+| `NB09A_CAM16_Metastasis.ipynb` | CAMELYON16 5-fold CV binary metastasis detection, AUROC with bootstrap CI |
+| `NB10_PANDA_FeatureProcessing.ipynb` | PANDA two-scale feature extraction with resolution-aware level selection from `openslide.mpp-x` (Karolinska 0.25 μm/pixel and Radboud 0.5 μm/pixel processed at consistent physical tissue area) |
+| `NB11_PANDA_MIL_Gleason.ipynb` | Multi-head attention pooling MIL with focal loss, ordinal/expectation regularizers, AdamW + cosine + EMA, 5-fold CV × 3 seeds for ISUP grading |
+| `NB12_PANDA_OOF_Metrics.ipynb` | Macro AUROC (one-vs-rest), threshold-wise binary metrics, per-provider (Karolinska vs Radboud) breakdown |
+| `NB13_Manuscript_Figures.ipynb` | Renders all manuscript data figures (3A–D, 4A–F, 1C, Supp Fig 1) from saved CSVs and OOF arrays |
 
-## Pipeline
+## Manuscript figures
 
-`notebook.py` contains the full training and evaluation pipeline (Scripts 01–12):
+All data figures are regenerated by NB13 at 300 dpi to `<WORKSPACE>/figures/manuscript/`. Schematic figures (1A, 1B, 2A, 2B) are hand-drawn and not produced by code.
+
+| Notebook | Main figures | Supplementary figures |
+|----------|--------------|-----------------------|
+| NB02 | — | manifest size distribution, mpp availability, slides-per-cancer-code |
+| NB03 | — | QC tissue percentage, blur distribution, white fraction, exclusion-by-cancer |
+| NB04 | — | tile token distribution per scale |
+| NB13 | Fig 1C (computational efficiency), Fig 3A (per-cancer F1), Fig 3B (per-cancer AUROC), Fig 3C (organ-system F1), Fig 3D (accuracy vs test size), Fig 4A (CAMELYON16 ROC), Fig 4B (PANDA per-grade), Fig 4C (CAMELYON17 per-center κ), Fig 4D (CAMELYON17 transition matrix), Fig 4E (TCGA 10-class OpenSlideFM vs UNI2-h), Fig 4F (PANDA cross-provider) | Supp Fig 1 (TCGA UMAP) |
+
+## Pipeline execution order
+
+Feature extraction runs once with ImageNet weights (NB05), the backbone is pretrained in NB06, then NB05 is re-run to refresh feature caches with the pretrained ConvNeXt before downstream evaluations:
 
 ```
-WSI Input → Tissue Segmentation → Two-Scale Tiling (0.5 + 2.0 μm/pixel)
-         → ConvNeXt-Tiny Feature Extraction → Transformer Aggregation
-         → BYOL + MFR Pre-training → Downstream Evaluation
+NB01 -> NB02 -> NB03 -> NB04
+NB05  (initial pass: ImageNet ConvNeXt features)
+NB06  (BYOL + MFR pretraining: phase 1 aggregator, phase 2 backbone + aggregator)
+NB06C (verify pretraining gates)
+NB05  (rerun: delete features/scale*p*/ first, then refresh with pretrained backbone)
+NB08  (export slide embeddings)
+NB07  (TCGA 31-class evaluation)
+NB09  (CAMELYON17 LOCO)
+NB09A (CAMELYON16 5-fold)
+NB10  (PANDA features)
+NB11  (PANDA MIL training)
+NB12  (PANDA OOF metrics)
+NB13  (render manuscript figures)
 ```
 
-## Data
+To rerun NB05 with the pretrained backbone, delete the cached features first:
 
-- **TCGA**: [NIH Genomic Data Commons](https://gdc.cancer.gov)
-- **CAMELYON16/17**: [Grand Challenge](https://camelyon16.grand-challenge.org)
-- **PANDA**: [Kaggle](https://www.kaggle.com/c/prostate-cancer-grade-assessment)
+```bash
+rm -rf $WORKSPACE/features/scale0p5 $WORKSPACE/features/scale2p0
+```
 
+NB05 will detect the latest checkpoint via `weights/latest.txt` and re-extract using the pretrained ConvNeXt.
+
+## Setup
+
+### Data
+
+Raw data are publicly available from:
+
+- **TCGA WSIs** — [GDC Data Portal](https://portal.gdc.cancer.gov/) (20,000 H&E slides from 10,795 patients across 31 cancer types)
+- **CAMELYON16** — [camelyon16.grand-challenge.org](https://camelyon16.grand-challenge.org/)
+- **CAMELYON17** — [camelyon17.grand-challenge.org](https://camelyon17.grand-challenge.org/)
+- **PANDA** — [Kaggle PANDA challenge](https://www.kaggle.com/c/prostate-cancer-grade-assessment) (10,616 prostate biopsy slides from Radboud + Karolinska)
+- **UNI2-h pre-extracted features** (for Figure 4E benchmark comparison) — Mahmood Lab public repository
+
+### Environment
+
+```bash
+pip install -r requirements.txt
+```
+
+Tested with PyTorch 2.5.1, CUDA 12.1, Python 3.11 on Ubuntu 24.04 / Windows 10.
+
+### Running
+
+1. Clone this repository
+2. Download raw data into your local project directory. Expected top-level structure:
+   ```
+   <project_root>/
+     Raw Data/
+       TCGA/<cancer_code>/<slide>.svs
+       CAMELYON16/...
+       CAMELYON17/...
+     Validation Data/
+       PANDA/
+         train.csv
+         train_images/<image_id>.tiff
+   ```
+3. Set environment variables, or run from a directory that already contains the data folders:
+   ```bash
+   export WORKSPACE=/path/to/openslidefm/workspace   # all writes go here
+   export WSI_ROOT=/path/to/your/project/Raw\ Data/TCGA
+   export PANDA_ROOT=/path/to/your/project/Validation\ Data/PANDA
+   ```
+4. Run notebooks sequentially in Jupyter, following the pipeline execution order above:
+
+```bash
+git clone https://github.com/Sjtu-Fuxilab/OpenSlideFM.git
+cd OpenSlideFM
+export WORKSPACE=/path/to/openslidefm/workspace
+export WSI_ROOT=/path/to/wsi/data
+export PANDA_ROOT=/path/to/panda/data
+jupyter notebook
+```
+
+## Hardware
+
+Pretraining and inference were performed on a single workstation with NVIDIA GeForce RTX 4090 (24 GB VRAM), 384 GB RAM, and a 16-core CPU. Pretraining (4 epochs) takes ~72 hours; inference is ~2.3 seconds per WSI single-stream.
+
+## Key results
+
+| Task | Dataset | Metric | OpenSlideFM | Reference |
+|------|---------|--------|-------------|-----------|
+| Pan-cancer classification (31-class) | TCGA, 10,795 patients | Accuracy | 81.21% (95% CI 80.35–82.08) | — |
+| 10-class benchmark | TCGA, 4,044 patients | Accuracy | 91.0% ± 2.6% | UNI2-h: 94.3% ± 1.6% |
+| Metastasis detection | CAMELYON16, 269 slides | AUROC | 0.673 (95% CI 0.632–0.716) | UNI: 0.795, Virchow: 0.812 |
+| pN staging (multi-center) | CAMELYON17, 100 patients | Quadratic-weighted κ | 0.141 (95% CI -0.028–0.309) | Published range: 0.20–0.65 |
+| Gleason grading | PANDA, 10,616 slides | Quadratic-weighted κ | 0.826 (95% CI 0.810–0.842) | UNI: 0.839, Virchow: 0.847 |
+
+## Citation
+
+If you use OpenSlideFM, please cite:
+
+```
+Zafar SA, Qin W, Liu C, Khan AA, Nazir A, Khalid F, Faisal MS.
+OpenSlideFM: A Computationally Efficient Multi-Scale Foundation Model for Computational Pathology.
+2026.
+```
+
+## License
+
+Code released under the MIT License. Pretrained weights released under CC-BY-NC-4.0 for non-commercial research use.
 
 ## Contact
 
-Sanwal Ahmad Zafar — sanwal@sjtu.edu.cn
-Prof. Wei Qin (Advisor) — wqin@sjtu.edu.cn
-Fuxi Lab, Shanghai Jiao Tong University, China 
+Questions about the code or paper: open a GitHub issue or contact the corresponding author.
